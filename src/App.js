@@ -3,14 +3,14 @@ import './App.css';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-blue.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { fetchStudentGridData } from './actions/studentDetailsAction';
+import { fetchStudentGridData, localStorageStudentData } from './actions/studentDetailsAction';
 import { connect } from 'react-redux';
 import { AgGridReact } from 'ag-grid-react';
 import Modal from 'react-modal';
 /*
 * style for modal dialog
 */
-const customStyles = {
+const modalStyles = {
   content: {
     top: '50%',
     left: '50%',
@@ -77,25 +77,30 @@ class StudentDetails extends React.Component {
     }
   }
   componentDidMount() {
-    this.props.dispatch(fetchStudentGridData());
+    if (JSON.parse(localStorage.getItem("studentData")) === null || JSON.parse(localStorage.getItem("studentData")).length === 0) {
+      this.props.dispatch(fetchStudentGridData());
+    }
+    else {
+      this.props.dispatch(localStorageStudentData(JSON.parse(localStorage.getItem("studentData"))));
+    }
+
   }
-  componentWillMount(){
+  componentWillMount() {
     Modal.setAppElement('body');
   }
   componentWillReceiveProps(nextProps) {
-    if (JSON.parse(localStorage.getItem("studentData")) === null || JSON.parse(localStorage.getItem("studentData")).length === 0) {
-      const studentData = nextProps.studentData ? nextProps.studentData : undefined;
+    let studentData = nextProps.studentData;
+    if (studentData[0].favourite === undefined) {
       for (let i = 0; i < studentData.length; i++) {
-        studentData[i].favourite = 'No'
+        studentData[i].favourite = 'No';
       }
-      localStorage.setItem("studentData", JSON.stringify(studentData));
     }
     this.setState({
-      gridData: JSON.parse(localStorage.getItem("studentData"))
+      gridData: studentData
     })
   }
   /**
-   * @desc favouriteValue, return favourite Value in the grid
+   * @desc favouriteValue, return favourite Value of the student Grid
    * @param {object} params params
    * @returns {string} string
   */
@@ -144,11 +149,11 @@ class StudentDetails extends React.Component {
     })
   }
   /**
- * @desc handleUpdatedData, function to update data of the grid row
+ * @desc handleUpdatedStudentData, function to update data of the grid row
  * @param {null} null
  * @returns {null} null
 */
-  handleUpdatedData() {
+  handleUpdatedStudentData() {
     let studentRecords = this.state.gridData;
     for (let i = 0; i < studentRecords.length; i++) {
       if ((studentRecords[i].favourite).toUpperCase() === 'YES') {
@@ -164,7 +169,12 @@ class StudentDetails extends React.Component {
       detailsButtonFlag: false
     })
   }
-  handleClose() {
+  /**
+ * @desc handleCloseModal, function to close modal
+ * @param {null} null
+ * @returns {null} null
+*/
+  handleCloseModal() {
     this.setState({ modalIsOpen: false });
   }
 
@@ -175,11 +185,9 @@ class StudentDetails extends React.Component {
 
         <Modal
           isOpen={this.state.modalIsOpen}
-          onRequestClose={this.closeModal}
-          style={customStyles}
+          style={modalStyles}
           contentLabel="Example Modal"
         >
-
           {this.state.detailsButtonFlag === true ? (
             <div>
               <h2 id="modalHeaderId" ref={subtitle => this.subtitle = subtitle}>Student Details</h2>
@@ -223,15 +231,15 @@ class StudentDetails extends React.Component {
                   </div>
                 </div>
               </form>
-              <button type="button" className="col-md-2 btn btn-primary float-right" style={{ margin: "10px" }} onClick={() => this.handleClose()}>CLose</button>
+              <button type="button" className="col-md-2 btn btn-primary float-right" style={{ margin: "10px" }} onClick={() => this.handleCloseModal()}>Close</button>
             </div>
           ) : (
-            <div>
-              <p>
+              <div>
+                <p>
                   Student Records Updated
               </p>
-              <button type="button" className="col-md-5 btn btn-primary updateMessage" onClick={() => this.handleClose()}>Ok</button>
-            </div>
+                <button type="button" className="col-md-5 btn btn-primary updateMessage" onClick={() => this.handleCloseModal()}>Ok</button>
+              </div>
             )
           }
         </Modal>
@@ -254,7 +262,7 @@ class StudentDetails extends React.Component {
           <div className="form-group col-md-5 col-xs-5 col-sm-5">
             <footer>
               <button type="button" id="detailBtn" className="btn btn-primary float-right col-md-3 col-xs-2 col-sm-2" onClick={() => this.handleDetailScreenValidation()} disabled={!this.state.detailScreenFlag}> Detail Screen</button>
-              <button type="button" id="updateBtn" className="btn btn-primary float-right col-md-3 col-xs-2 col-sm-2" onClick={() => this.handleUpdatedData()} disabled={!this.state.updateRecordFlag}> Update Data</button>
+              <button type="button" id="updateBtn" className="btn btn-primary float-right col-md-3 col-xs-2 col-sm-2" onClick={() => this.handleUpdatedStudentData()} disabled={!this.state.updateRecordFlag}> Update Data</button>
             </footer>
 
           </div>
@@ -269,4 +277,3 @@ function mapStateToProps(state) {
   }
 }
 export default connect(mapStateToProps)(StudentDetails);
-// export default App;

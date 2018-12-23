@@ -23,3 +23,11 @@ export function fetchStudentGridData() {
       })
   }
 }
+export function localStorageStudentData(studentData) {
+  return (dispatch) => {
+    dispatch({
+      type: 'GRID_DATA',
+      payload: studentData
+    })
+  }
+}
