@@ -83,7 +83,7 @@ class StudentDetails extends React.Component {
     Modal.setAppElement('body');
   }
   componentWillReceiveProps(nextProps) {
-    if (JSON.parse(localStorage.getItem("studentData")) === null) {
+    if (JSON.parse(localStorage.getItem("studentData")) === null || JSON.parse(localStorage.getItem("studentData")).length === 0) {
       const studentData = nextProps.studentData ? nextProps.studentData : undefined;
       for (let i = 0; i < studentData.length; i++) {
         studentData[i].favourite = 'No'
@@ -228,7 +228,7 @@ class StudentDetails extends React.Component {
           ) : (
             <div>
               <p>
-                  Details Updated
+                  Student Records Updated
               </p>
               <button type="button" className="col-md-5 btn btn-primary updateMessage" onClick={() => this.handleClose()}>Ok</button>
             </div>
@@ -253,8 +253,8 @@ class StudentDetails extends React.Component {
           </div>
           <div className="form-group col-md-5 col-xs-5 col-sm-5">
             <footer>
-              <button type="button" id="detailBtn" className="btn btn-primary float-right col-md-2 col-xs-2 col-sm-2" onClick={() => this.handleDetailScreenValidation()} disabled={!this.state.detailScreenFlag}> Detail Screen</button>
-              <button type="button" id="updateBtn" className="btn btn-primary float-right col-md-2 col-xs-2 col-sm-2" onClick={() => this.handleUpdatedData()} disabled={!this.state.updateRecordFlag}> Update Data</button>
+              <button type="button" id="detailBtn" className="btn btn-primary float-right col-md-3 col-xs-2 col-sm-2" onClick={() => this.handleDetailScreenValidation()} disabled={!this.state.detailScreenFlag}> Detail Screen</button>
+              <button type="button" id="updateBtn" className="btn btn-primary float-right col-md-3 col-xs-2 col-sm-2" onClick={() => this.handleUpdatedData()} disabled={!this.state.updateRecordFlag}> Update Data</button>
             </footer>
 
           </div>
