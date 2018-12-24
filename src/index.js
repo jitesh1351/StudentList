@@ -9,7 +9,7 @@ const rootElement = document.getElementById('root');
 render(
     <Provider store={store} >
       <Router history={hashHistory}>
-        <Route path="/" component={StudentDetails} />
+        <Route path="/studentDetails" component={StudentDetails} />
       </Router>
     </Provider>,
     rootElement
