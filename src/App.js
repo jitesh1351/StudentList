@@ -26,12 +26,12 @@ class StudentDetails extends React.Component {
     super(props);
     this.state = {
       modalIsOpen: false,
-      gridData: [],
+      gridDataForStudentList: [],
       stateVal: 0,
       detailScreenFlag: false,
       updateRecordFlag: false,
       firstCallFlag: true,
-      columnDefs: [
+      columnDefsForStudentList: [
         {
           headerName: "Row",
           checkboxSelection: true,
@@ -96,7 +96,7 @@ class StudentDetails extends React.Component {
       }
     }
     this.setState({
-      gridData: studentData
+      gridDataForStudentList: studentData
     })
   }
   /**
@@ -105,14 +105,14 @@ class StudentDetails extends React.Component {
    * @returns {string} string
   */
   favouriteValue(params) {
-    return this.state.gridData[params.rowIndex].favourite
+    return this.state.gridDataForStudentList[params.rowIndex].favourite
 
   }
   /**
- * @desc onGridRowSelection, function to be called when student grid data is selected
+ * @desc onStudentRowSelection, function to be called when student grid data is selected
  * @returns {null} null
 */
-  onRowSelection() {
+  onStudentRowSelection() {
     let selectedRow = this.gridApi.getSelectedRows();
     if (selectedRow.length === 1) {
       this.setState({
@@ -154,7 +154,7 @@ class StudentDetails extends React.Component {
  * @returns {null} null
 */
   handleUpdatedStudentData() {
-    let studentRecords = this.state.gridData;
+    let studentRecords = this.state.gridDataForStudentList;
     for (let i = 0; i < studentRecords.length; i++) {
       if ((studentRecords[i].favourite).toUpperCase() === 'YES') {
         studentRecords[i].favourite = 'Yes';
@@ -252,17 +252,17 @@ class StudentDetails extends React.Component {
           <div id="myGrid" style={{ height: '500px', width: '756px' }} className="ag-theme-blue">
             <AgGridReact
               rowSelection="single"
-              columnDefs={self.state.columnDefs}
-              rowData={self.state.gridData}
+              columnDefs={self.state.columnDefsForStudentList}
+              rowData={self.state.gridDataForStudentList}
               onGridReady={params => this.gridApi = params.api}
-              onSelectionChanged={() => this.onRowSelection()}
+              onSelectionChanged={() => this.onStudentRowSelection()}
             >
             </AgGridReact>
           </div>
-          <div className="form-group col-md-5 col-xs-5 col-sm-5">
+          <div className="form-group col-md-5">
             <footer>
-              <button type="button" id="detailBtn" className="btn btn-primary float-right col-md-3 col-xs-2 col-sm-2" onClick={() => this.handleDetailScreenValidation()} disabled={!this.state.detailScreenFlag}> Detail Screen</button>
-              <button type="button" id="updateBtn" className="btn btn-primary float-right col-md-3 col-xs-2 col-sm-2" onClick={() => this.handleUpdatedStudentData()} disabled={!this.state.updateRecordFlag}> Update Data</button>
+              <button type="button" id="detailBtn" className="btn btn-primary float-right col-md-3" onClick={() => this.handleDetailScreenValidation()} disabled={!this.state.detailScreenFlag}> Detail Screen</button>
+              <button type="button" id="updateBtn" className="btn btn-primary float-right col-md-3" onClick={() => this.handleUpdatedStudentData()} disabled={!this.state.updateRecordFlag}> Update Data</button>
             </footer>
 
           </div>
